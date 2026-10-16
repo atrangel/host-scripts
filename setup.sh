@@ -7,8 +7,10 @@
 #   共通のセットアップ時に一度だけ実行します。
 #
 # Example:
-#   su -c 'sh setup.sh'
+#   su -c 'bash setup.sh'
 #
+
+cd /opt/host-scripts
 
 # エラー時: 終了
 set -eu
@@ -19,8 +21,18 @@ if [ "$(id -u)" -ne 0 ]; then
     return
 fi
 
+echo
+echo
+echo
+echo "マシンの初期セットアップを行います。"
+echo "このスクリプトはホストマシンの初回セットアップ時に一度だけ実行します。"
+read -r -p "実行しますか？ (y/n): " answer
+if [[ ! "$answer" =~ ^[yY]$ ]]; then
+    exit
+fi
+
 # -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- #
-#  Package updating
+#  パッケージ情報更新
 # -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- #
 echo
 echo
@@ -34,7 +46,7 @@ apt full-upgrade -y
 
 
 # -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- #
-#  Package Installation
+#  パッケージインストール
 # -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- #
 echo
 echo
@@ -52,14 +64,16 @@ apt install -y \
     gnupg \
     openssh-server \
     rsync \
+    sudo \
     ufw \
     unzip \
     vim \
+    wireguard \
     wget
 
 
 # -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- #
-#  Docker Installation
+#  Docker インストール
 # -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- #
 echo
 echo
